@@ -4,6 +4,7 @@ class GildedRose
   BASE_SELL_IN_CHANGE = 1
   ITEM_QUALITY_MINIMUM = 0
   ITEM_QUALITY_MAXIMUM = 50
+  SELL_BY_DATE = 0
 
   attr_reader :items
 
@@ -22,7 +23,7 @@ class GildedRose
   def standard_item_quality
     items.each do |item|
       unless SPECIAL_ITEMS.include?(item.name) || item.quality == ITEM_QUALITY_MINIMUM
-        item.sell_in >= 0 ? item.quality -= BASE_QUALITY_CHANGE : item.quality -= BASE_QUALITY_CHANGE * 2
+        item.sell_in >= SELL_BY_DATE ? item.quality -= BASE_QUALITY_CHANGE : item.quality -= BASE_QUALITY_CHANGE * 2
       end
     end
   end
@@ -30,7 +31,7 @@ class GildedRose
   def aged_brie_quality
     items.each do |item|
       if item.name == "Aged Brie" && item.quality < ITEM_QUALITY_MAXIMUM
-        item.sell_in >= 0 ? item.quality += BASE_QUALITY_CHANGE : item.quality += BASE_QUALITY_CHANGE * 2
+        item.sell_in >= SELL_BY_DATE ? item.quality += BASE_QUALITY_CHANGE : item.quality += BASE_QUALITY_CHANGE * 2
       end
     end
   end
@@ -38,7 +39,7 @@ class GildedRose
   def backstage_pass_quality
     items.each do |item|
       if item.name == "Backstage passes to a TAFKAL80ETC concert"
-        if item.quality < ITEM_QUALITY_MAXIMUM && item.sell_in >= 0
+        if item.quality < ITEM_QUALITY_MAXIMUM && item.sell_in >= SELL_BY_DATE
           if item.sell_in > 10
             item.quality += BASE_QUALITY_CHANGE
           elsif item.sell_in > 5
@@ -46,8 +47,8 @@ class GildedRose
           else
             item.quality += BASE_QUALITY_CHANGE * 3
           end
-        elsif item.sell_in < 0
-          item.quality = 0
+        elsif item.sell_in < SELL_BY_DATE
+          item.quality = ITEM_QUALITY_MINIMUM
         end
       end
     end

@@ -13,12 +13,6 @@ describe AgedBrie do
     end
   end
 
-  describe "#decrease_sell_in" do
-    it "decreases the sell_in value" do
-      expect{ aged_brie.decrease_sell_in }.to change{ aged_brie.sell_in }.by -GildedRose::BASE_SELL_IN_CHANGE
-    end
-  end
-
   describe "#update_quality" do
     it "increases the quality by 1 if the sell_in is greater than 0" do
       expect{ aged_brie.update_quality }.to change{ aged_brie.quality }.by GildedRose::BASE_SELL_IN_CHANGE
@@ -46,12 +40,6 @@ describe BackstagePass do
 
     it "initializes with a quality value" do
       expect(backstage_pass.quality).to eq 10
-    end
-  end
-
-  describe "#decrease_sell_in" do
-    it "decreases the sell_in value" do
-      expect{ backstage_pass.decrease_sell_in }.to change{ backstage_pass.sell_in }.by -GildedRose::BASE_SELL_IN_CHANGE
     end
   end
 
