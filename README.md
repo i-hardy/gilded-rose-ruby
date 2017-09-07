@@ -16,5 +16,5 @@ To run the tests:
 $ git clone
 $ cd gilded-rose-ruby
 $ rspec
-~~~
+```
 Note that there is a considerable amount of test duplication- I have retained all the original tests I wrote for the update_quality method, in order to demonstrate that the original functionality has been preserved.

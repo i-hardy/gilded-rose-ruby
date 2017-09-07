@@ -1,24 +1,22 @@
 class GildedRose
-  SPECIAL_ITEM_NAMES = ["Aged Brie", "Sulfuras, Hand of Ragnaros", "Backstage passes to a TAFKAL80ETC concert"]
-  BASE_QUALITY_CHANGE = 1
-  BASE_SELL_IN_CHANGE = 1
-  ITEM_QUALITY_MINIMUM = 0
-  ITEM_QUALITY_MAXIMUM = 50
-  SELL_BY_DATE = 0
+  QUALITY_CHANGE = 1
+  SELL_IN_CHANGE = 1
+  QUALITY_MINIMUM = 0
+  QUALITY_MAXIMUM = 50
 
   attr_reader :items, :classified_items, :item_classes
 
   def initialize(items,
-                standard_class: StandardItem,
-                brie_class: AgedBrie,
-                sulfuras_class: Sulfuras,
-                pass_class: BackstagePass)
+                 standard_class: StandardItem,
+                 brie_class: AgedBrie,
+                 sulfuras_class: Sulfuras,
+                 pass_class: BackstagePass)
     @items = items
     @classified_items = []
-    @item_classes = {"Standard" => standard_class,
-                     "Aged Brie" => brie_class,
-                     "Sulfuras, Hand of Ragnaros" => sulfuras_class,
-                     "Backstage passes to a TAFKAL80ETC concert" => pass_class}
+    @item_classes = { "Standard" => standard_class,
+                      "Aged Brie" => brie_class,
+                      "Sulfuras, Hand of Ragnaros" => sulfuras_class,
+                      "Backstage passes to a TAFKAL80ETC concert" => pass_class }
     create_classified_items
   end
 
@@ -37,11 +35,12 @@ class GildedRose
 
   def update_items_list
     items.each_with_index do |item, index|
-      item.sell_in, item.quality = classified_items[index].sell_in, classified_items[index].quality
+      item.sell_in = classified_items[index].sell_in
+      item.quality = classified_items[index].quality
     end
   end
 
-  def update_quality()
+  def update_quality
     classified_items_update
     update_items_list
   end

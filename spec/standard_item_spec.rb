@@ -19,12 +19,16 @@ describe StandardItem do
 
   describe "update_quality" do
     it "decreases the quality by 1 if the sell_in is more than 0" do
-      expect{ standard_item.update_quality }.to change{ standard_item.quality }.by(-GildedRose::BASE_QUALITY_CHANGE)
+      expect { standard_item.update_quality }
+        .to change { standard_item.quality }
+        .by(-GildedRose::QUALITY_CHANGE)
     end
 
     it "decreases the quality by 2 if the sell_in is negative" do
       old_standard_item = described_class.new("Macguffin", -1, 20)
-      expect{ old_standard_item.update_quality }.to change{ old_standard_item.quality }.by(-GildedRose::BASE_QUALITY_CHANGE * 2)
+      expect { old_standard_item.update_quality }
+        .to change { old_standard_item.quality }
+        .by(-GildedRose::QUALITY_CHANGE * 2)
     end
   end
 

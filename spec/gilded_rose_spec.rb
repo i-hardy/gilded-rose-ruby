@@ -1,55 +1,65 @@
-require 'gilded_rose'
+require "gilded_rose"
 
 describe GildedRose do
-  let(:standard_item_class) { class_double('StandardItem') }
-  let(:aged_brie_class) { class_double('AgedBrie') }
-  let(:sulfuras_class) { class_double('Sulfuras') }
-  let(:backstage_pass_class) { class_double('BackstagePass') }
+  let(:standard_item_class) { class_double("StandardItem") }
+  let(:aged_brie_class) { class_double("AgedBrie") }
+  let(:sulfuras_class) { class_double("Sulfuras") }
+  let(:backstage_pass_class) { class_double("BackstagePass") }
   let(:standard_instance) { double(:standard_item) }
   let(:brie_instance) { double(:aged_brie) }
   let(:pass_instance) { double(:backstage_pass) }
   let(:sulfuras_instance) { double(:sulfuras) }
 
-  let(:items) { [ Item.new("Macguffin", 10, 10),
-                Item.new("Aged Brie", 10, 10),
-                Item.new("Sulfuras, Hand of Ragnaros", 10, 10),
-                Item.new("Backstage passes to a TAFKAL80ETC concert", 15, 10)] }
+  let(:items) do
+    [Item.new("Macguffin", 10, 10),
+     Item.new("Aged Brie", 10, 10),
+     Item.new("Sulfuras, Hand of Ragnaros", 10, 10),
+     Item.new("Backstage passes to a TAFKAL80ETC concert", 15, 10)]
+  end
 
-
-  subject(:gilded_rose) { described_class.new(items,
-                                              standard_class: standard_item_class,
-                                              brie_class: aged_brie_class,
-                                              sulfuras_class: sulfuras_class,
-                                              pass_class: backstage_pass_class) }
+  subject(:gilded_rose) do
+    described_class.new(items,
+                        standard_class: standard_item_class,
+                        brie_class: aged_brie_class,
+                        sulfuras_class: sulfuras_class,
+                        pass_class: backstage_pass_class)
+  end
 
   before do
     allow(standard_item_class).to receive(:new) { standard_instance }
     allow(aged_brie_class).to receive(:new) { brie_instance }
     allow(sulfuras_class).to receive(:new) { sulfuras_instance }
     allow(backstage_pass_class).to receive(:new) { pass_instance }
-    allow(standard_instance).to receive_messages(update_quality: nil, decrease_sell_in: nil)
-    allow(brie_instance).to receive_messages(update_quality: nil, decrease_sell_in: nil)
-    allow(sulfuras_instance).to receive_messages(update_quality: nil, decrease_sell_in: nil)
-    allow(pass_instance).to receive_messages(update_quality: nil, decrease_sell_in: nil)
+    allow(standard_instance).to receive_messages(update_quality: nil,
+                                                 decrease_sell_in: nil)
+    allow(brie_instance).to receive_messages(update_quality: nil,
+                                             decrease_sell_in: nil)
+    allow(sulfuras_instance).to receive_messages(update_quality: nil,
+                                                 decrease_sell_in: nil)
+    allow(pass_instance).to receive_messages(update_quality: nil,
+                                             decrease_sell_in: nil)
   end
 
   describe "#create_classified_items" do
-    it "populates the special items list with instances of the specific item classes" do
+    it "populates the special items list" do
       expect(gilded_rose.classified_items.size).to eq 4
     end
 
-    it "populates the list with instances of the Aged Brie class when said items are present" do
-      expect(aged_brie_class).to receive(:new).with(instance_of(String), 10, 10)
+    it "creates instances of the Aged Brie class" do
+      expect(aged_brie_class).to receive(:new)
+        .with(instance_of(String), 10, 10)
       gilded_rose.create_classified_items
     end
 
-    it "populates the list with instances of the Sulfuras class when said items are present" do
-      expect(sulfuras_class).to receive(:new).with(instance_of(String), 10, 10)
+    it "creates instances of the Sulfuras class" do
+      expect(sulfuras_class).to receive(:new)
+        .with(instance_of(String), 10, 10)
       gilded_rose.create_classified_items
     end
 
-    it "populates the list with instances of the Backstage Pass class when said items are present" do
-      expect(backstage_pass_class).to receive(:new).with(instance_of(String), 15, 10)
+    it "creates instances of the Backstage Pass class" do
+      expect(backstage_pass_class).to receive(:new)
+        .with(instance_of(String), 15, 10)
       gilded_rose.create_classified_items
     end
   end
@@ -88,42 +98,42 @@ describe GildedRose do
       allow(pass_instance).to receive_messages(sell_in: 8, quality: 25)
     end
 
-    it "updates a standard item's quality based on its counterpart in the classified items list" do
+    it "updates a standard item's quality based on its counterpart" do
       gilded_rose.update_items_list
       expect(gilded_rose.items[0].quality).to eq 20
     end
 
-    it "updates a standard item's sell_in based on its counterpart in the classified items list" do
+    it "updates a standard item's sell_in based on its counterpart" do
       gilded_rose.update_items_list
       expect(gilded_rose.items[0].sell_in).to eq 9
     end
 
-    it "updates aged brie's quality based on its counterpart in the classified items list" do
+    it "updates aged brie's quality based on its counterpart" do
       gilded_rose.update_items_list
       expect(gilded_rose.items[1].quality).to eq 30
     end
 
-    it "updates aged brie's sell_in based on its counterpart in the classified items list" do
+    it "updates aged brie's sell_in based on its counterpart" do
       gilded_rose.update_items_list
       expect(gilded_rose.items[1].sell_in).to eq 15
     end
 
-    it "updates sulfuras's quality based on its counterpart in the classified items list" do
+    it "updates sulfuras's quality based on its counterpart" do
       gilded_rose.update_items_list
       expect(gilded_rose.items[2].quality).to eq 50
     end
 
-    it "updates sulfuras's sell_in based on its counterpart in the classified items list" do
+    it "updates sulfuras's sell_in based on its counterpart" do
       gilded_rose.update_items_list
       expect(gilded_rose.items[2].sell_in).to eq 5
     end
 
-    it "updates a backstage pass's quality based on its counterpart in the classified items list" do
+    it "updates a backstage pass's quality based on its counterpart" do
       gilded_rose.update_items_list
       expect(gilded_rose.items[3].quality).to eq 25
     end
 
-    it "updates a backstage pass's sell_in based on its counterpart in the classified items list" do
+    it "updates a backstage pass's sell_in based on its counterpart" do
       gilded_rose.update_items_list
       expect(gilded_rose.items[3].sell_in).to eq 8
     end
@@ -162,7 +172,7 @@ describe GildedRose do
       expect(gilded_rose.items[0].sell_in).to eq 9
     end
 
-    it "decreases the quality of standard items by two if sell_in is less than 0" do
+    it "decreases the quality of standard items by two if sell_in < 0" do
       allow(standard_instance).to receive_messages(sell_in: 0, quality: 8)
       gilded_rose.update_quality
       expect(gilded_rose.items[0].quality).to eq 8
@@ -179,7 +189,7 @@ describe GildedRose do
       expect(gilded_rose.items[1].quality).to eq 11
     end
 
-    it "increases the quality of Aged Brie by two if sell_in is less than zero" do
+    it "increases the quality of Aged Brie by two if sell_in < zero" do
       allow(brie_instance).to receive_messages(sell_in: -1, quality: 12)
       gilded_rose.update_quality
       expect(gilded_rose.items[1].quality).to eq 12
@@ -194,7 +204,7 @@ describe GildedRose do
     it "decreases the sellin value of Aged Brie by one" do
       gilded_rose.update_quality
       expect(gilded_rose.items[1].sell_in).to eq 9
-     end
+    end
 
     it "does not change the quality of Sulfuras" do
       gilded_rose.update_quality
@@ -211,24 +221,24 @@ describe GildedRose do
       expect(gilded_rose.items[3].sell_in).to eq 14
     end
 
-    it "increases the quality of backstage passes by 1 when sell_in is greater than 10" do
+    it "increases backstage pass quality by 1 when sell_in > 10" do
       gilded_rose.update_quality
       expect(gilded_rose.items[3].quality).to eq 11
     end
 
-    it "increases the quality of backstage passes by 2 when sell_in is between 5 and 10" do
+    it "increases backstage pass quality by 2 when 5 < sell_in < 10" do
       allow(pass_instance).to receive_messages(sell_in: 6, quality: 12)
       gilded_rose.update_quality
       expect(gilded_rose.items[3].quality).to eq 12
     end
 
-    it "increases the quality of backstage passes by 3 when sell_in is less than 5" do
+    it "increases backstage pass quality by 3 when sell_in < 5" do
       allow(pass_instance).to receive_messages(sell_in: 4, quality: 13)
       gilded_rose.update_quality
       expect(gilded_rose.items[3].quality).to eq 13
     end
 
-    it "decreases the quality to zero once the sell_in is less than zero" do
+    it "decreases the quality to zero once sell_in < zero" do
       allow(pass_instance).to receive_messages(sell_in: -1, quality: 0)
       gilded_rose.update_quality
       expect(gilded_rose.items[3].quality).to eq 0
