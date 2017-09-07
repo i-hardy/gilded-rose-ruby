@@ -1,8 +1,35 @@
 class GildedRose
+  SPECIAL_ITEMS = ["Aged Brie", "Sulfuras, Hand of Ragnaros", "Backstage passes to a TAFKAL80ETC concert"]
+  BASE_QUALITY_CHANGE = 1
+  BASE_SELL_IN_CHANGE = 1
   attr_reader :items
 
   def initialize(items)
     @items = items
+  end
+
+  def decrease_item_sell_in
+    @items.each do |item|
+      unless item.name == "Sulfuras, Hand of Ragnaros"
+        item.sell_in -= BASE_SELL_IN_CHANGE
+      end
+    end
+  end
+
+  def standard_item_quality
+    @items.each do |item|
+      unless SPECIAL_ITEMS.include?(item.name) || item.quality == 0
+        item.sell_in >= 0 ? item.quality -= BASE_QUALITY_CHANGE : item.quality -= BASE_QUALITY_CHANGE * 2
+      end
+    end
+  end
+
+  def aged_brie_quality
+    @items.each do |item|
+      if item.name == "Aged Brie" && item.quality < 50
+        item.sell_in >= 0 ? item.quality += BASE_QUALITY_CHANGE : item.quality += BASE_QUALITY_CHANGE * 2
+      end
+    end
   end
 
   def update_quality()
