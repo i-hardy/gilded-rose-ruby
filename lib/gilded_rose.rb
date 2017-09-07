@@ -6,52 +6,48 @@ class GildedRose
   ITEM_QUALITY_MAXIMUM = 50
   SELL_BY_DATE = 0
 
-  attr_reader :items, :special_items, :item_classes
+  attr_reader :items, :classified_items, :item_classes
 
-  def initialize(items, brie_class: AgedBrie, pass_class: BackstagePass)
+  def initialize(items,
+                standard_class: StandardItem,
+                brie_class: AgedBrie,
+                sulfuras_class: Sulfuras,
+                pass_class: BackstagePass)
     @items = items
-    @special_items = []
-    @item_classes = {"Aged Brie" => brie_class,
+    @classified_items = []
+    @item_classes = {"Standard" => standard_class,
+                     "Aged Brie" => brie_class,
+                     "Sulfuras, Hand of Ragnaros" => sulfuras_class,
                      "Backstage passes to a TAFKAL80ETC concert" => pass_class}
-    create_special_items
+    create_classified_items
   end
 
-  def create_special_items
+  def create_classified_items
     items.each do |item|
-      if item_classes[item.name]
-        special_items << item_classes[item.name].new(item.name, item.sell_in, item.quality)
-        items.delete(item)
-      end
+      classified_items << get_item_class(item.name).new(item.name, item.sell_in, item.quality)
     end
   end
 
-  def decrease_item_sell_in
-    items.each do |item|
-      unless item.name == "Sulfuras, Hand of Ragnaros"
-        item.sell_in -= BASE_SELL_IN_CHANGE
-      end
-    end
-  end
-
-  def special_items_update
-    special_items.each do |item|
+  def classified_items_update
+    classified_items.each do |item|
       item.update_quality
       item.decrease_sell_in
     end
   end
 
-  def standard_item_quality
-    items.each do |item|
-      unless SPECIAL_ITEM_NAMES.include?(item.name) || item.quality == ITEM_QUALITY_MINIMUM
-        item.sell_in >= SELL_BY_DATE ? item.quality -= BASE_QUALITY_CHANGE : item.quality -= BASE_QUALITY_CHANGE * 2
-      end
+  def update_items_list
+    items.each_with_index do |item, index|
+      item.sell_in, item.quality = classified_items[index].sell_in, classified_items[index].quality
     end
   end
 
   def update_quality()
-    decrease_item_sell_in
-    standard_item_quality
-    special_items_update
+    classified_items_update
+    update_items_list
+  end
+
+  def get_item_class(name)
+    item_classes[name] || item_classes["Standard"]
   end
 end
 
