@@ -98,6 +98,52 @@ describe GildedRose do
     end
   end
 
+  describe "#backstage_pass_quality" do
+    it "increases the quality of backstage passes by 1 when sell_in is greater than 10" do
+      gilded_rose.backstage_pass_quality
+      expect(gilded_rose.items[3].quality).to eq 11
+    end
+
+    it "increases the quality of backstage passes by 2 when sell_in is between 5 and 10" do
+      backstage_pass.sell_in = 8
+      gilded_rose.backstage_pass_quality
+      expect(gilded_rose.items[3].quality).to eq 12
+    end
+
+    it "increases the quality of backstage passes by 3 when sell_in is less than 5" do
+      backstage_pass.sell_in = 4
+      gilded_rose.backstage_pass_quality
+      expect(gilded_rose.items[3].quality).to eq 13
+    end
+
+    it "decreases the quality to zero once the sell_in is less than zero" do
+      backstage_pass.sell_in = -1
+      gilded_rose.backstage_pass_quality
+      expect(gilded_rose.items[3].quality).to eq 0
+    end
+
+    it "cannot increase the quality of a backstage pass beyond 50" do
+      backstage_pass.quality = 50
+      gilded_rose.backstage_pass_quality
+      expect(gilded_rose.items[3].quality).to eq 50
+    end
+
+    it "does nothing to standard items" do
+      gilded_rose.backstage_pass_quality
+      expect(gilded_rose.items[0].quality).to eq 10
+    end
+
+    it "does nothing to Aged Brie" do
+      gilded_rose.backstage_pass_quality
+      expect(gilded_rose.items[1].quality).to eq 10
+    end
+
+    it "does nothing to Sulfuras" do
+      gilded_rose.backstage_pass_quality
+      expect(gilded_rose.items[2].quality).to eq 10
+    end
+  end
+
   describe "#update_quality" do
     it "does not change the name" do
       gilded_rose.update_quality
