@@ -1,15 +1,28 @@
 class GildedRose
-  SPECIAL_ITEMS = ["Aged Brie", "Sulfuras, Hand of Ragnaros", "Backstage passes to a TAFKAL80ETC concert"]
+  SPECIAL_ITEM_NAMES = ["Aged Brie", "Sulfuras, Hand of Ragnaros", "Backstage passes to a TAFKAL80ETC concert"]
   BASE_QUALITY_CHANGE = 1
   BASE_SELL_IN_CHANGE = 1
   ITEM_QUALITY_MINIMUM = 0
   ITEM_QUALITY_MAXIMUM = 50
   SELL_BY_DATE = 0
 
-  attr_reader :items
+  attr_reader :items, :special_items, :item_classes
 
-  def initialize(items)
+  def initialize(items, brie_class: AgedBrie, pass_class: BackstagePass)
     @items = items
+    @special_items = []
+    @item_classes = {"Aged Brie" => brie_class,
+                     "Backstage passes to a TAFKAL80ETC concert" => pass_class}
+    create_special_items
+  end
+
+  def create_special_items
+    items.each do |item|
+      if item_classes[item.name]
+        special_items << item_classes[item.name].new(item.name, item.sell_in, item.quality)
+        items.delete(item)
+      end
+    end
   end
 
   def decrease_item_sell_in
@@ -20,36 +33,17 @@ class GildedRose
     end
   end
 
+  def special_items_update
+    special_items.each do |item|
+      item.update_quality
+      item.decrease_sell_in
+    end
+  end
+
   def standard_item_quality
     items.each do |item|
-      unless SPECIAL_ITEMS.include?(item.name) || item.quality == ITEM_QUALITY_MINIMUM
+      unless SPECIAL_ITEM_NAMES.include?(item.name) || item.quality == ITEM_QUALITY_MINIMUM
         item.sell_in >= SELL_BY_DATE ? item.quality -= BASE_QUALITY_CHANGE : item.quality -= BASE_QUALITY_CHANGE * 2
-      end
-    end
-  end
-
-  def aged_brie_quality
-    items.each do |item|
-      if item.name == "Aged Brie" && item.quality < ITEM_QUALITY_MAXIMUM
-        item.sell_in >= SELL_BY_DATE ? item.quality += BASE_QUALITY_CHANGE : item.quality += BASE_QUALITY_CHANGE * 2
-      end
-    end
-  end
-
-  def backstage_pass_quality
-    items.each do |item|
-      if item.name == "Backstage passes to a TAFKAL80ETC concert"
-        if item.quality < ITEM_QUALITY_MAXIMUM && item.sell_in >= SELL_BY_DATE
-          if item.sell_in > 10
-            item.quality += BASE_QUALITY_CHANGE
-          elsif item.sell_in > 5
-            item.quality += BASE_QUALITY_CHANGE * 2
-          else
-            item.quality += BASE_QUALITY_CHANGE * 3
-          end
-        elsif item.sell_in < SELL_BY_DATE
-          item.quality = ITEM_QUALITY_MINIMUM
-        end
       end
     end
   end
@@ -57,8 +51,7 @@ class GildedRose
   def update_quality()
     decrease_item_sell_in
     standard_item_quality
-    aged_brie_quality
-    backstage_pass_quality
+    special_items_update
   end
 end
 

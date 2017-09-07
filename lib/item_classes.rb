@@ -1,13 +1,8 @@
 require_relative "item_helpers"
 
-class AgedBrie
+class AgedBrie < Item
   include ItemHelpers
   attr_reader :sell_in, :quality
-
-  def initialize(sell_in, quality)
-    @sell_in = sell_in
-    @quality = quality
-  end
 
   def update_quality
     sell_in.negative? ? @quality += GildedRose::BASE_QUALITY_CHANGE * 2 : @quality += GildedRose::BASE_QUALITY_CHANGE
@@ -15,15 +10,10 @@ class AgedBrie
   end
 end
 
-class BackstagePass
+class BackstagePass < Item
   include ItemHelpers
   attr_reader :sell_in, :quality
   QUALITY_FACTORS = {11 => 1, 6 => 2, 0 => 3}
-
-  def initialize(sell_in, quality)
-    @sell_in = sell_in
-    @quality = quality
-  end
 
   def update_quality
     if sell_in >= GildedRose::SELL_BY_DATE

@@ -1,7 +1,7 @@
 require "item_classes"
 
 describe AgedBrie do
-  subject(:aged_brie) { described_class.new(10, 20) }
+  subject(:aged_brie) { described_class.new("Aged Brie", 10, 20) }
 
   describe "initialization" do
     it "initializes with a sell_in value" do
@@ -19,19 +19,25 @@ describe AgedBrie do
     end
 
     it "increases the quality by 2 if the sell_in is less than 0" do
-      super_aged_brie = described_class.new(-1, 20)
+      super_aged_brie = described_class.new("Aged Brie", -1, 20)
       expect{ super_aged_brie.update_quality }.to change{ super_aged_brie.quality }.by GildedRose::BASE_SELL_IN_CHANGE * 2
     end
 
     it "cannot increase the quality beyond 50" do
-      high_quality_brie = described_class.new(10, 50)
+      high_quality_brie = described_class.new("Aged Brie", 10, 50)
       expect{ high_quality_brie.update_quality }.not_to change{ high_quality_brie.quality }
+    end
+  end
+
+  describe "#to_s" do
+    it "returns a string with the item name and its sell_in and quality" do
+      expect(aged_brie.to_s).to eq "Aged Brie, 10, 20"
     end
   end
 end
 
 describe BackstagePass do
-  subject(:backstage_pass) { described_class.new(15, 10) }
+  subject(:backstage_pass) { described_class.new("Backstage passes to a TAFKAL80ETC concert", 15, 10) }
 
   describe "initialization" do
     it "initializes with a sell_in value" do
@@ -44,10 +50,10 @@ describe BackstagePass do
   end
 
   describe "#update_quality" do
-    subject(:nearer_backstage_pass) { described_class.new(9, 10) }
-    subject(:nearest_backstage_pass) { described_class.new(4, 10) }
-    subject(:expired_backstage_pass) { described_class.new(-1, 10) }
-    subject(:fabulous_backstage_pass) { described_class.new(15, 50) }
+    subject(:nearer_backstage_pass) { described_class.new("Pass", 9, 10) }
+    subject(:nearest_backstage_pass) { described_class.new("Pass", 4, 10) }
+    subject(:expired_backstage_pass) { described_class.new("Pass", -1, 10) }
+    subject(:fabulous_backstage_pass) { described_class.new("Pass", 15, 50) }
 
     it "increases the quality by 1 when sell_in is greater than 10" do
       expect{ backstage_pass.update_quality }.to change{ backstage_pass.quality }.by GildedRose::BASE_SELL_IN_CHANGE
@@ -68,6 +74,12 @@ describe BackstagePass do
 
     it "cannot increase the quality beyond 50" do
       expect{ fabulous_backstage_pass.update_quality }.not_to change{ fabulous_backstage_pass.quality }
+    end
+  end
+
+  describe "#to_s" do
+    it "returns a string with the item name and its sell_in and quality" do
+      expect(backstage_pass.to_s).to eq "Backstage passes to a TAFKAL80ETC concert, 15, 10"
     end
   end
 end
