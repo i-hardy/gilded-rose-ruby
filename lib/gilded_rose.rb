@@ -10,13 +10,15 @@ class GildedRose
                  standard_class: StandardItem,
                  brie_class: AgedBrie,
                  sulfuras_class: Sulfuras,
-                 pass_class: BackstagePass)
+                 pass_class: BackstagePass,
+                 conjured_class: ConjuredItem)
     @items = items
     @classified_items = []
     @item_classes = { "Standard" => standard_class,
                       "Aged Brie" => brie_class,
                       "Sulfuras, Hand of Ragnaros" => sulfuras_class,
-                      "Backstage passes to a TAFKAL80ETC concert" => pass_class }
+                      "Backstage passes to a TAFKAL80ETC concert" => pass_class,
+                      "Conjured item" => conjured_class }
     create_classified_items
   end
 

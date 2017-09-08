@@ -5,16 +5,19 @@ describe GildedRose do
   let(:aged_brie_class) { class_double("AgedBrie") }
   let(:sulfuras_class) { class_double("Sulfuras") }
   let(:backstage_pass_class) { class_double("BackstagePass") }
+  let(:conjured_item_class) { class_double("ConjuredItem") }
   let(:standard_instance) { double(:standard_item) }
   let(:brie_instance) { double(:aged_brie) }
   let(:pass_instance) { double(:backstage_pass) }
   let(:sulfuras_instance) { double(:sulfuras) }
+  let(:conjured_instance) { double(:conjured_item) }
 
   let(:items) do
     [Item.new("Macguffin", 10, 10),
      Item.new("Aged Brie", 10, 10),
      Item.new("Sulfuras, Hand of Ragnaros", 10, 10),
-     Item.new("Backstage passes to a TAFKAL80ETC concert", 15, 10)]
+     Item.new("Backstage passes to a TAFKAL80ETC concert", 15, 10),
+     Item.new("Conjured item", 10, 10)]
   end
 
   subject(:gilded_rose) do
@@ -22,7 +25,8 @@ describe GildedRose do
                         standard_class: standard_item_class,
                         brie_class: aged_brie_class,
                         sulfuras_class: sulfuras_class,
-                        pass_class: backstage_pass_class)
+                        pass_class: backstage_pass_class,
+                        conjured_class: conjured_item_class)
   end
 
   before do
@@ -30,6 +34,7 @@ describe GildedRose do
     allow(aged_brie_class).to receive(:new) { brie_instance }
     allow(sulfuras_class).to receive(:new) { sulfuras_instance }
     allow(backstage_pass_class).to receive(:new) { pass_instance }
+    allow(conjured_item_class).to receive(:new) { conjured_instance }
     allow(standard_instance).to receive_messages(update_quality: nil,
                                                  decrease_sell_in: nil)
     allow(brie_instance).to receive_messages(update_quality: nil,
@@ -38,9 +43,17 @@ describe GildedRose do
                                                  decrease_sell_in: nil)
     allow(pass_instance).to receive_messages(update_quality: nil,
                                              decrease_sell_in: nil)
+    allow(conjured_instance).to receive_messages(update_quality: nil,
+                                              decrease_sell_in: nil)
   end
 
   describe "#create_classified_items" do
+    it "creates instances of the standard item class" do
+      expect(standard_item_class).to receive(:new)
+        .with(instance_of(String), 10, 10)
+      gilded_rose.create_classified_items
+    end
+
     it "creates instances of the Aged Brie class" do
       expect(aged_brie_class).to receive(:new)
         .with(instance_of(String), 10, 10)
@@ -58,9 +71,25 @@ describe GildedRose do
         .with(instance_of(String), 15, 10)
       gilded_rose.create_classified_items
     end
+
+    it "creates instances of the conjured item class" do
+      expect(conjured_item_class).to receive(:new)
+        .with(instance_of(String), 10, 10)
+      gilded_rose.create_classified_items
+    end
   end
 
   describe "#classified_items_update" do
+    it "updates the quality of standard items" do
+      expect(standard_instance).to receive(:update_quality)
+      gilded_rose.classified_items_update
+    end
+
+    it "updates the sell_in of standard items" do
+      expect(standard_instance).to receive(:decrease_sell_in)
+      gilded_rose.classified_items_update
+    end
+
     it "updates the quality of aged brie" do
       expect(brie_instance).to receive(:update_quality)
       gilded_rose.classified_items_update
@@ -80,6 +109,21 @@ describe GildedRose do
       expect(pass_instance).to receive(:decrease_sell_in)
       gilded_rose.classified_items_update
     end
+
+    it "updates the quality of backstage passes" do
+      expect(pass_instance).to receive(:update_quality)
+      gilded_rose.classified_items_update
+    end
+
+    it "updates the sell_in of conjured items" do
+      expect(conjured_instance).to receive(:decrease_sell_in)
+      gilded_rose.classified_items_update
+    end
+
+    it "updates the quality of conjured items" do
+      expect(conjured_instance).to receive(:update_quality)
+      gilded_rose.classified_items_update
+    end
   end
 
   describe "#update_items_list" do
@@ -88,6 +132,7 @@ describe GildedRose do
       allow(brie_instance).to receive_messages(sell_in: 15, quality: 30)
       allow(sulfuras_instance).to receive_messages(sell_in: 5, quality: 50)
       allow(pass_instance).to receive_messages(sell_in: 8, quality: 25)
+      allow(conjured_instance).to receive_messages(sell_in: 4, quality: 17)
     end
 
     it "updates a standard item's quality based on its counterpart" do
@@ -129,6 +174,16 @@ describe GildedRose do
       gilded_rose.update_items_list
       expect(gilded_rose.items[3].sell_in).to eq 8
     end
+
+    it "updates a conjured item's quality based on its counterpart" do
+      gilded_rose.update_items_list
+      expect(gilded_rose.items[4].quality).to eq 17
+    end
+
+    it "updates a conjured item's sell_in based on its counterpart" do
+      gilded_rose.update_items_list
+      expect(gilded_rose.items[4].sell_in).to eq 4
+    end
   end
 
   describe "#get_item_class" do
@@ -147,6 +202,7 @@ describe GildedRose do
       allow(brie_instance).to receive_messages(sell_in: 9, quality: 11)
       allow(sulfuras_instance).to receive_messages(sell_in: 10, quality: 10)
       allow(pass_instance).to receive_messages(sell_in: 14, quality: 11)
+      allow(conjured_instance).to receive_messages(sell_in: 9, quality: 8)
     end
 
     it "does not change the name" do
