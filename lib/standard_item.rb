@@ -7,5 +7,6 @@ class StandardItem < Item
 
   def update_quality
     @quality -= sell_in.negative? ? GildedRose::QUALITY_CHANGE * 2 : GildedRose::QUALITY_CHANGE
+    quality_lower_boundary
   end
 end

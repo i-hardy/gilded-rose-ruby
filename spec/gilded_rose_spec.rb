@@ -41,10 +41,6 @@ describe GildedRose do
   end
 
   describe "#create_classified_items" do
-    it "populates the special items list" do
-      expect(gilded_rose.classified_items.size).to eq 4
-    end
-
     it "creates instances of the Aged Brie class" do
       expect(aged_brie_class).to receive(:new)
         .with(instance_of(String), 10, 10)
@@ -64,11 +60,7 @@ describe GildedRose do
     end
   end
 
-  describe "#special_items_update" do
-    before do
-      gilded_rose.create_classified_items
-    end
-
+  describe "#classified_items_update" do
     it "updates the quality of aged brie" do
       expect(brie_instance).to receive(:update_quality)
       gilded_rose.classified_items_update

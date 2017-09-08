@@ -24,4 +24,13 @@ describe ItemHelpers do
         .to eq GildedRose::QUALITY_MAXIMUM
     end
   end
+
+  describe "#quality_lower_boundary" do
+    it "increases quality to the minimum if it is higher" do
+      item.instance_variable_set(:@quality, -1)
+      item.quality_lower_boundary
+      expect(item.instance_variable_get(:@quality))
+        .to eq GildedRose::QUALITY_MINIMUM
+    end
+  end
 end

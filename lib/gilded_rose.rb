@@ -4,7 +4,7 @@ class GildedRose
   QUALITY_MINIMUM = 0
   QUALITY_MAXIMUM = 50
 
-  attr_reader :items, :classified_items, :item_classes
+  attr_reader :items
 
   def initialize(items,
                  standard_class: StandardItem,
@@ -27,9 +27,9 @@ class GildedRose
   end
 
   def classified_items_update
-    classified_items.each do |item|
-      item.update_quality
-      item.decrease_sell_in
+    classified_items.each do |classified_item|
+      classified_item.update_quality
+      classified_item.decrease_sell_in
     end
   end
 
@@ -48,6 +48,10 @@ class GildedRose
   def get_item_class(name)
     item_classes[name] || item_classes["Standard"]
   end
+
+  private
+
+  attr_reader :classified_items, :item_classes
 end
 
 class Item

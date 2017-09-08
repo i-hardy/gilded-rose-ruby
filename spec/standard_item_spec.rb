@@ -30,6 +30,12 @@ describe StandardItem do
         .to change { old_standard_item.quality }
         .by(-GildedRose::QUALITY_CHANGE * 2)
     end
+
+    it "cannot decrease the quality below zero" do
+      terrible_standard_item = described_class.new("Macguffin", 10, 0)
+      expect { terrible_standard_item.update_quality }
+        .not_to change { terrible_standard_item.quality }
+    end
   end
 
   describe "to_s" do
