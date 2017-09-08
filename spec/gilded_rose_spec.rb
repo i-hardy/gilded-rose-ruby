@@ -20,13 +20,16 @@ describe GildedRose do
      Item.new("Conjured item", 10, 10)]
   end
 
+  let(:item_class_hash) do
+    { standard_class: standard_item_class,
+      brie_class: aged_brie_class,
+      sulfuras_class: sulfuras_class,
+      pass_class: backstage_pass_class,
+      conjured_class: conjured_item_class }
+  end
+
   subject(:gilded_rose) do
-    described_class.new(items,
-                        standard_class: standard_item_class,
-                        brie_class: aged_brie_class,
-                        sulfuras_class: sulfuras_class,
-                        pass_class: backstage_pass_class,
-                        conjured_class: conjured_item_class)
+    described_class.new(items, item_class_hash)
   end
 
   before do
@@ -107,11 +110,6 @@ describe GildedRose do
 
     it "updates the sell_in of backstage passes" do
       expect(pass_instance).to receive(:decrease_sell_in)
-      gilded_rose.classified_items_update
-    end
-
-    it "updates the quality of backstage passes" do
-      expect(pass_instance).to receive(:update_quality)
       gilded_rose.classified_items_update
     end
 
@@ -296,6 +294,22 @@ describe GildedRose do
       allow(pass_instance).to receive_messages(sell_in: 6, quality: 50)
       gilded_rose.update_quality
       expect(gilded_rose.items[3].quality).to eq 50
+    end
+
+    it "decreases the quality of conjured items by two" do
+      gilded_rose.update_quality
+      expect(gilded_rose.items[4].quality).to eq 8
+    end
+
+    it "decreases the sellin value of conjured items by one" do
+      gilded_rose.update_quality
+      expect(gilded_rose.items[4].sell_in).to eq 9
+    end
+
+    it "decreases the quality of conjured items by four if sell_in < 0" do
+      allow(conjured_instance).to receive_messages(sell_in: 0, quality: 6)
+      gilded_rose.update_quality
+      expect(gilded_rose.items[4].quality).to eq 6
     end
   end
 end

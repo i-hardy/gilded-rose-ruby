@@ -1,5 +1,7 @@
 # Gilded Rose Kata - Ruby
 
+[![Code Climate](https://codeclimate.com/github/i-hardy/gilded-rose-ruby/badges/gpa.svg)](https://codeclimate.com/github/i-hardy/gilded-rose-ruby)
+
 Using the [Ruby translation](https://github.com/emilybache/GildedRose-Refactoring-Kata) of the kata provided by Emily Bache.
 
 I approached the kata initially by creating tests to cover all the functionality in the spec and provided by the original update_quality method, then extracting out the various different conditions of the update_quality method into separate methods within the GildedRose class, so that I could see more clearly where the responsibilities lay.

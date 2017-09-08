@@ -14,6 +14,6 @@ class BackstagePass < Item
   private
 
   def quality_factor
-    QUALITY_FACTORS.select { |days_remaining, _factor| days_remaining < sell_in }.values[0]
+    QUALITY_FACTORS.select { |days_remaining| days_remaining < sell_in }.values[0]
   end
 end
